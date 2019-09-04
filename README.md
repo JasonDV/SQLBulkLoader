@@ -1,2 +1,4 @@
-## SQL Query Utilities
-This repository holds SQL Server query utilities.  
+## SQL Bulk Loader
+A convention based wrapper for the SQLBulkCopy utility.
+
+
