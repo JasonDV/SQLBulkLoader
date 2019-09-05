@@ -6,6 +6,13 @@ The purpose of this utility is to reduce the amount of code necessary to preform
 
 The class is configurable and handles remapping fields between DTO and target table, ignoring DTO properties, and controlling batch size. As well, the bulk loader avoids using a DataTable to reduce the memory overhead of preforming the bulkcopy. 
 
+nuget: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader/
+
+## Targets
+
+* .NETFramework 4.6.1
+* .NETStandard 2.0
+
 # Basic usage
 
 With this sample table:
@@ -19,7 +26,7 @@ CREATE TABLE dbo.Sample(
 )
 ```
 
-Simple bulk load with insert of identity values.
+## Simple bulk load with insert of identity values.
 
 ```csharp
 var dtos = new[]
@@ -40,7 +47,7 @@ new BulkLoader()
 
 <hr />
 
-Bulk load with DTO to target table remapping.
+## Bulk load with DTO to target table remapping.
 
 ```csharp
 var dtos = new[]
@@ -63,7 +70,7 @@ new BulkLoader()
 ```
 <hr />
 
-Bulk load with ignore of property values.
+## Bulk load with ignore of property values.
 
 ```csharp
 var dtos = new[]
@@ -82,3 +89,8 @@ var dtos = new[]
     .Without(c => c.Pk)
     .Execute();
 ```
+
+# Dependencies
+
+This utility is used to preform an efficient bulkcopy. Fast-member can create an efficient IDataReader that can feed directly into the SqlBulkCopy WriteToServer method. Normally, a DataTable is created for each batched write to the server.
+fast-member: https://github.com/mgravell/fast-member
