@@ -5,6 +5,11 @@
 
 var target = Argument ("target", "Default");
 var configuration = Argument ("configuration", "Release");
+var version = Argument ("build_version", "1.0.0.0");
+
+Information("target: {0}", target);
+Information("configuration: {0}", configuration);
+Information("build_version: {0}", version);
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -14,10 +19,9 @@ var configuration = Argument ("configuration", "Release");
 var rootDir = Directory ("./");
 var sourceDir = Directory ("./src");
 var buildDir = Directory ("./localBuild");
-var solutionOutputDir = Directory(buildDir.Path + "/SQLBulkLoaderSolution");
-var integrationTestOutputDir = Directory(buildDir.Path + "/IntegrationTests");
-var sqlBulkLoaderOutputDir = Directory(buildDir.Path + "/SQLBulkLoaderUtility");
-
+var solutionOutputDir = Directory (buildDir.Path + "/SQLBulkLoaderSolution");
+var integrationTestOutputDir = Directory (buildDir.Path + "/IntegrationTests");
+var sqlBulkLoaderOutputDir = Directory (buildDir.Path + "/SQLBulkLoaderUtility");
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -39,19 +43,25 @@ Task ("BuildSolution")
     .Does (() => {
         var settings = new MSBuildSettings ()
             .SetConfiguration (configuration)
-            .SetVerbosity(Verbosity.Minimal)
-            .WithProperty("OutDir", MakeAbsolute(solutionOutputDir).FullPath);
+            .SetVerbosity (Verbosity.Minimal)
+            .WithProperty ("OutDir", MakeAbsolute (solutionOutputDir).FullPath)
+            .WithProperty ("Version", version)
+            .WithProperty ("AssemblyVersion", version)
+            .WithProperty ("FileVersion", version);
 
-        MSBuild (sourceDir.Path + "/SQLBulkLoader.sln", settings);          
+        MSBuild (sourceDir.Path + "/SQLBulkLoader.sln", settings);
     });
 
 Task ("BuildIntegrationTests")
     .IsDependentOn ("Restore-NuGet-Packages")
-    .Does (() => {   
+    .Does (() => {
         var settings = new MSBuildSettings ()
             .SetConfiguration (configuration)
-            .SetVerbosity(Verbosity.Minimal)
-            .WithProperty("OutDir", MakeAbsolute(integrationTestOutputDir).FullPath);
+            .SetVerbosity (Verbosity.Minimal)
+            .WithProperty ("OutDir", MakeAbsolute (integrationTestOutputDir).FullPath)
+            .WithProperty ("Version", version)
+            .WithProperty ("AssemblyVersion", version)
+            .WithProperty ("FileVersion", version);
 
         MSBuild (sourceDir.Path + "/IntegrationTests/IntegrationTests.csproj", settings);
     });
@@ -61,8 +71,11 @@ Task ("BuildSqlBulkLoader")
     .Does (() => {
         var settings = new MSBuildSettings ()
             .SetConfiguration (configuration)
-            .SetVerbosity(Verbosity.Minimal)
-            .WithProperty("OutDir", MakeAbsolute(sqlBulkLoaderOutputDir).FullPath);
+            .SetVerbosity (Verbosity.Minimal)
+            .WithProperty ("OutDir", MakeAbsolute (sqlBulkLoaderOutputDir).FullPath)
+            .WithProperty ("Version", version)
+            .WithProperty ("AssemblyVersion", version)
+            .WithProperty ("FileVersion", version);
 
         MSBuild (sourceDir.Path + "/ivaldez.SqlBulkLoader/ivaldez.Sql.SqlBulkLoader.csproj", settings);
     });
@@ -70,39 +83,27 @@ Task ("BuildSqlBulkLoader")
 Task ("Run-Unit-Tests")
     .IsDependentOn ("BuildIntegrationTests")
     .Does (() => {
-        Information("Start Running Tests");
-        XUnit2(integrationTestOutputDir.Path + "/*Tests.dll");   
+        Information ("Start Running Tests");
+        XUnit2 (integrationTestOutputDir.Path + "/*Tests.dll");
     });
 
-Task("BuildPackages")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .IsDependentOn("BuildSqlBulkLoader")
-    .Does(() =>
-{
-    /*
-    var nuGetPackSettings = new NuGetPackSettings
-	{
-		OutputDirectory = buildDir.Path,
-		IncludeReferencedProjects = true,
-		Properties = new Dictionary<string, string>
-		{
-			{ "Configuration", "Release" }
-		}
-	};
+Task ("BuildPackages")
+    .IsDependentOn ("Restore-NuGet-Packages")
+    .IsDependentOn ("BuildSqlBulkLoader")
+    .Does (() => {
+        var settings = new DotNetCorePackSettings {
+            Configuration = "Release",
+            OutputDirectory = buildDir.Path,
+            IncludeSource = true,
+            IncludeSymbols = true
+        };
+        var projectPath = sourceDir.Path + "/ivaldez.SqlBulkLoader/ivaldez.Sql.SqlBulkLoader.csproj";
 
-    MSBuild(sourceDir.Path + "/ivaldez.SqlBulkLoader/ivaldez.Sql.SqlBulkLoader.csproj",
-        new MSBuildSettings().SetConfiguration(configuration));
-    NuGetPack(sourceDir.Path + "/ivaldez.SqlBulkLoader/ivaldez.Sql.SqlBulkLoader.csproj", 
-        nuGetPackSettings);
- */
-           var settings = new DotNetCorePackSettings
-     {
-         Configuration = "Release",
-         OutputDirectory = buildDir.Path,
-     };
+        XmlPoke(projectPath, "/Project/PropertyGroup/Version", version);
+        XmlPoke(projectPath, "/Project/PropertyGroup/AssemblyVersion", version);
 
-     DotNetCorePack(sourceDir.Path + "/ivaldez.SqlBulkLoader/ivaldez.Sql.SqlBulkLoader.csproj", settings);
-});
+        DotNetCorePack (projectPath, settings);
+    });
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
@@ -112,7 +113,7 @@ Task ("Default")
     .IsDependentOn ("BuildSolution")
     .IsDependentOn ("BuildIntegrationTests")
     .IsDependentOn ("BuildSqlBulkLoader")
-    .IsDependentOn ("BuildPackages")  
+    .IsDependentOn ("BuildPackages")
     .IsDependentOn ("Run-Unit-Tests");
 
 //////////////////////////////////////////////////////////////////////
