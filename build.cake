@@ -112,9 +112,9 @@ Task ("BuildPackages")
 Task ("Default")
     .IsDependentOn ("BuildSolution")
     .IsDependentOn ("BuildIntegrationTests")
-    .IsDependentOn ("BuildSqlBulkLoader")
-    .IsDependentOn ("BuildPackages")
-    .IsDependentOn ("Run-Unit-Tests");
+    .IsDependentOn ("BuildSqlBulkLoader")    
+    .IsDependentOn ("Run-Unit-Tests")
+    .IsDependentOn ("BuildPackages");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
