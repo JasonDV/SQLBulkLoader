@@ -1,8 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <AssemblyName>ivaldez.Sql.SqlBulkLoader</AssemblyName>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Copyright>Copyright 2019 Jason Valdez</Copyright>
+    <PackageLicenseUrl>https://github.com/JasonDV/SQLBulkLoader/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JasonDV/SQLBulkLoader</PackageProjectUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <Description>A convention based wrapper around the SqlBulkCopy utility.</Description>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>1.0.0.6</Version>
+    <AssemblyVersion>1.0.0.6</AssemblyVersion>
+    <Authors>Jason Valdez</Authors>
+    <Company>ivaldez</Company>
+    <RepositoryUrl>https://github.com/JasonDV/SQLBulkLoader</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>SqlBulkCopy database mssql</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
