@@ -15,6 +15,11 @@ namespace ivaldez.Sql.SqlBulkLoader
     {
         private readonly ISqlBulkCopyUtility _sqlBulkCopyUtility;
 
+        public BulkLoader()
+        {
+            _sqlBulkCopyUtility = new SqlBulkCopyUtility();
+        }
+
         public BulkLoader(ISqlBulkCopyUtility sqlBulkCopyUtility)
         {
             _sqlBulkCopyUtility = sqlBulkCopyUtility;
