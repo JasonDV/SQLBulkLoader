@@ -14,7 +14,8 @@ namespace ivaldez.Sql.SqlBulkLoader
             SqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
-            int batchSize = 5000);
+            int batchSize = 5000,
+            bool noBatch = false);
 
         BulkLoaderContext<T> InsertWithOptions<T>(
             string tableName,
@@ -23,13 +24,13 @@ namespace ivaldez.Sql.SqlBulkLoader
             IEnumerable<T> dataToInsert,
             int batchSize = 5000);
 
-        void Insert<T>(
-            string tableName,
+        void Insert<T>(string tableName,
             SqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             List<string> propertiesToIgnore,
             Dictionary<string, string> renameFields,
-            int batchSize = 5000);
+            int batchSize = 5000,
+            bool noBatch = false);
     }
 }

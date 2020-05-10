@@ -55,13 +55,15 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// <param name="conn">A SQL connection</param>
         /// <param name="keepIdentityColumnValue">If true, the bulk copy will attempt to insert into identity columns on the target table.</param>
         /// <param name="dataToInsert">The data that will be bulk loaded into the target table.</param>
-        /// <param name="batchSize">The batch size of each bulk load.</param>
+        /// <param name="batchSize">The batch size of each bulk load.</param> 
+        /// <param name="noBatch">Indicates that no batching should occur and all data should be written at once.</param>
         public void Insert<T>(
             string tableName,
             SqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
-            int batchSize = 5000)
+            int batchSize = 5000,
+            bool noBatch = false)
         {
             Insert(
                 tableName,
@@ -70,7 +72,8 @@ namespace ivaldez.Sql.SqlBulkLoader
                 dataToInsert,
                 new List<string>(),
                 new Dictionary<string, string>(),
-                batchSize);
+                batchSize,
+                noBatch);
         }
 
         /// <summary>
@@ -84,14 +87,15 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// <param name="propertiesToIgnore">A list of properties on the DTO to ignore.</param>
         /// <param name="renameFields">Pairs of source property names and mapped column names on the target table.</param>
         /// <param name="batchSize">The batch size of each bulk load.</param>
-        public void Insert<T>(
-            string tableName,
+        /// <param name="noBatch">Indicates that no batching should occur and all data should be written at once.</param>
+        public void Insert<T>(string tableName,
             SqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             List<string> propertiesToIgnore,
             Dictionary<string, string> renameFields,
-            int batchSize = 5000)
+            int batchSize = 5000, 
+            bool noBatch = false)
         {
             var targetProperties = GetTargetProperties<T>(propertiesToIgnore, renameFields);
 
@@ -99,9 +103,28 @@ namespace ivaldez.Sql.SqlBulkLoader
 
             if (keepIdentityColumnValue)
             {
-                options = options | SqlBulkCopyOptions.KeepIdentity;
+                options |= SqlBulkCopyOptions.KeepIdentity;
             }
 
+            if (noBatch)
+            {
+                BulkCopyWithNoBatching(tableName, conn, dataToInsert, options, targetProperties);
+            }
+            else
+            {
+                BulkCopyWithBatching(tableName, conn, dataToInsert, batchSize, options, targetProperties);
+            }
+        }
+
+        private void BulkCopyWithNoBatching<T>(string tableName, SqlConnection conn, IEnumerable<T> dataToInsert,
+            SqlBulkCopyOptions options, TargetProperty[] targetProperties)
+        {
+            _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, dataToInsert);
+        }
+
+        private void BulkCopyWithBatching<T>(string tableName, SqlConnection conn, IEnumerable<T> dataToInsert, int batchSize,
+            SqlBulkCopyOptions options, TargetProperty[] targetProperties)
+        {
             var batch = new List<T>(batchSize);
 
             foreach (var item in dataToInsert)
@@ -121,7 +144,7 @@ namespace ivaldez.Sql.SqlBulkLoader
                 batch.Clear();
             }
         }
-        
+
         public class SqlBulkCopyUtility: ISqlBulkCopyUtility
         {
             public void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,

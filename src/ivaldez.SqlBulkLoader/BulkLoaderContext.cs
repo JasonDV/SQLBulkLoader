@@ -16,6 +16,7 @@ namespace ivaldez.Sql.SqlBulkLoader
 
         private readonly List<string> _withoutMembers;
         private int _batchSize;
+        private bool _noBatch;
 
         public BulkLoaderContext(
             IBulkLoader bulkLoader,
@@ -72,6 +73,13 @@ namespace ivaldez.Sql.SqlBulkLoader
             return this;
         }
 
+        public BulkLoaderContext<T> NoBatch()
+        {
+            _noBatch = true;
+
+            return this;
+        }
+
         public void Execute()
         {
             _bulkLoader.Insert(
@@ -81,7 +89,8 @@ namespace ivaldez.Sql.SqlBulkLoader
                 _dataToInsert,
                 _withoutMembers,
                 _renameFields,
-                _batchSize);
+                _batchSize,
+                _noBatch);
         }
 
         private string GetName(Expression<Func<T, object>> expression)
