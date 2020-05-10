@@ -13,6 +13,13 @@ namespace ivaldez.Sql.SqlBulkLoader
     /// </summary>
     public class BulkLoader : IBulkLoader
     {
+        private readonly ISqlBulkCopyUtility _sqlBulkCopyUtility;
+
+        public BulkLoader(ISqlBulkCopyUtility sqlBulkCopyUtility)
+        {
+            _sqlBulkCopyUtility = sqlBulkCopyUtility;
+        }
+
         /// <summary>
         /// Bulk load with customizations.
         /// </summary>
@@ -103,40 +110,56 @@ namespace ivaldez.Sql.SqlBulkLoader
 
                 if (batch.Count >= batchSize)
                 {
-                    BulkCopy(tableName, conn, options, targetProperties, batch);
+                    _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
                     batch.Clear();
                 }
             }
 
             if (batch.Any())
             {
-                BulkCopy(tableName, conn, options, targetProperties, batch);
+                _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
                 batch.Clear();
             }
         }
-
-        private static void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
-            TargetProperty[] targetProperties, IEnumerable<T> toInsert)
+        
+        public class SqlBulkCopyUtility: ISqlBulkCopyUtility
         {
-            using (var bulkCopy = new SqlBulkCopy(conn, options, null))
+            public void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
+                TargetProperty[] targetProperties, IEnumerable<T> toInsert)
             {
-                var parameters = targetProperties.Select(x => x.OriginalName).ToArray();
-
-
-                using (var reader = ObjectReader.Create(toInsert, parameters))
+                using (var bulkCopy = new SqlBulkCopy(conn, options, null))
                 {
-                    foreach (var property in targetProperties)
+                    var parameters = targetProperties.Select(x => x.OriginalName).ToArray();
+
+                    using (var reader = ObjectReader.Create(toInsert, parameters))
                     {
-                        bulkCopy.ColumnMappings.Add(property.OriginalName, property.Name);
+                        foreach (var property in targetProperties)
+                        {
+                            bulkCopy.ColumnMappings.Add(property.OriginalName, property.Name);
+                        }
+
+                        bulkCopy.BulkCopyTimeout = 900;
+                        bulkCopy.DestinationTableName = tableName;
+                        bulkCopy.WriteToServer(reader);
+
+                        bulkCopy.Close();
                     }
-
-                    bulkCopy.BulkCopyTimeout = 900;
-                    bulkCopy.DestinationTableName = tableName;
-                    bulkCopy.WriteToServer(reader);
-
-                    bulkCopy.Close();
                 }
             }
+        }
+
+        public interface ISqlBulkCopyUtility
+        {
+            void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
+                TargetProperty[] targetProperties, IEnumerable<T> toInsert);
+        }
+
+        public class TargetProperty
+        {
+            public string Name { get; set; }
+            public Type Type { get; set; }
+            public PropertyInfo PropertyInfo { get; set; }
+            public string OriginalName { get; set; }
         }
 
         private static TargetProperty[] GetTargetProperties<T>(List<string> propertiesToIgnore,
@@ -169,11 +192,11 @@ namespace ivaldez.Sql.SqlBulkLoader
         }
     }
 
-    internal class TargetProperty
+    public class BulkLoaderFactory
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
-        public PropertyInfo PropertyInfo { get; set; }
-        public string OriginalName { get; set; }
+        public static IBulkLoader Create()
+        {
+            return new BulkLoader(new BulkLoader.SqlBulkCopyUtility());
+        }
     }
 }

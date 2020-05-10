@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 using FluentAssertions;
 using ivaldez.Sql.IntegrationTests.Data;
 using ivaldez.Sql.SqlBulkLoader;
@@ -6,10 +8,32 @@ using Xunit;
 
 namespace ivaldez.Sql.IntegrationTests.BulkLoading
 {
-    public class BulkLoaderGeneralTests
+    public class BulkLoaderForBatchSizeTests
     {
+        public class SqlBulkCopyUtilitySpy: BulkLoader.ISqlBulkCopyUtility
+        {
+            public void BulkCopy<T>(string tableName,
+                SqlConnection conn, 
+                SqlBulkCopyOptions options,
+                BulkLoader.TargetProperty[] targetProperties,
+                IEnumerable<T> toInsert)
+            {
+                BulkCopyCalled++;
+
+                new BulkLoader.SqlBulkCopyUtility()
+                    .BulkCopy(tableName,
+                        conn, 
+                        options,
+                        targetProperties,
+                        toInsert);
+            }
+
+            public int BulkCopyCalled { get; set; }
+        }
+
+
         [Fact]
-        public void ShouldBulkLoad()
+        public void ShouldBatchBulkCopyCommandsByOptionValue()
         {
             var testingDatabaseService = new TestingDatabaseService();
             testingDatabaseService.CreateTestDatabase();
@@ -37,13 +61,17 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
                 }
             };
 
+            var sqlBulkCopyUtilitySpy = new SqlBulkCopyUtilitySpy();
+            
             dataGateway.ExecuteWithConnection(conn =>
             {
-                BulkLoaderFactory.Create()
+                new BulkLoader(sqlBulkCopyUtilitySpy)
                     .InsertWithOptions("Sample", conn, true, dtos)
-                    .Without(c => c.Pk)
+                    .SetBatchSize(1)
                     .Execute();
             });
+
+            sqlBulkCopyUtilitySpy.BulkCopyCalled.Should().Be(2);
 
             var databaseDtos = dataGateway.GetAllSampleSurrogateKey().ToArray();
 

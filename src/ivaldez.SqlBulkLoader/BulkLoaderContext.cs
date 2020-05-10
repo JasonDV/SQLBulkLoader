@@ -60,6 +60,18 @@ namespace ivaldez.Sql.SqlBulkLoader
             return this;
         }
 
+        public IReadOnlyDictionary<string, string> GetRenameRules()
+        {
+            return _renameFields;
+        }
+
+        public BulkLoaderContext<T> SetBatchSize(int value)
+        {
+            _batchSize = value;
+
+            return this;
+        }
+
         public void Execute()
         {
             _bulkLoader.Insert(
@@ -70,16 +82,6 @@ namespace ivaldez.Sql.SqlBulkLoader
                 _withoutMembers,
                 _renameFields,
                 _batchSize);
-        }
-
-        public IReadOnlyDictionary<string, string> GetRenameRules()
-        {
-            return _renameFields;
-        }
-
-        public void SetBatchSize(int value)
-        {
-            _batchSize = value;
         }
 
         private string GetName(Expression<Func<T, object>> expression)

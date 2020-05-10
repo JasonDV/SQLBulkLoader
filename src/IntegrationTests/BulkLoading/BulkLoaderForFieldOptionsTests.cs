@@ -40,7 +40,7 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
 
             dataGateway.ExecuteWithConnection(conn =>
             {
-                new BulkLoader()
+                BulkLoaderFactory.Create()
                     .InsertWithOptions("Sample", conn, true, dtos)
                     .With(c => c.TextValueExtra, "TextValue")
                     .With(c => c.IntValueExtra, "IntValue")
@@ -92,7 +92,7 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
 
             dataGateway.ExecuteWithConnection(conn =>
             {
-                new BulkLoader()
+                BulkLoaderFactory.Create()
                     .InsertWithOptions("Sample", conn, true, dtos)
                     .Without("DecimalValue")
                     .Without(t => t.IntValue)
@@ -141,7 +141,7 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
                 }
             };
 
-            var bulkLoader = new BulkLoader()
+            var bulkLoader = BulkLoaderFactory.Create()
                 .InsertWithOptions("Sample", null, true, dtos)
                 .With(c => c.TextValueExtra, "TextValue")
                 .With(c => c.IntValueExtra, "IntValue")

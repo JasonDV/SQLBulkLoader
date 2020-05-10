@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BulkLoading\BulkLoaderForBatchSizeTests.cs" />
     <Compile Include="BulkLoading\BulkLoaderForFieldOptionsTests.cs" />
     <Compile Include="BulkLoading\BulkLoaderForPrimaryKeyTests.cs" />
     <Compile Include="BulkLoading\BulkLoaderGeneralTests.cs" />
