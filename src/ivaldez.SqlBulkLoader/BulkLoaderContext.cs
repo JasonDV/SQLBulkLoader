@@ -60,21 +60,6 @@ namespace ivaldez.Sql.SqlBulkLoader
             return this;
         }
 
-        private string GetName(Expression<Func<T, object>> expression)
-        {
-            var body = expression.Body as MemberExpression;
-
-            if (body == null)
-            {
-                var ubody = (UnaryExpression) expression.Body;
-                body = ubody.Operand as MemberExpression;
-            }
-
-            var name = body.Member.Name;
-
-            return name;
-        }
-
         public void Execute()
         {
             _bulkLoader.Insert(
@@ -95,6 +80,21 @@ namespace ivaldez.Sql.SqlBulkLoader
         public void SetBatchSize(int value)
         {
             _batchSize = value;
+        }
+
+        private string GetName(Expression<Func<T, object>> expression)
+        {
+            var body = expression.Body as MemberExpression;
+
+            if (body == null)
+            {
+                var ubody = (UnaryExpression) expression.Body;
+                body = ubody.Operand as MemberExpression;
+            }
+
+            var name = body.Member.Name;
+
+            return name;
         }
     }
 }

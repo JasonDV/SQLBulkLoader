@@ -68,7 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BulkLoading\BulkLoaderTests.cs" />
+    <Compile Include="BulkLoading\BulkLoaderForFieldOptionsTests.cs" />
+    <Compile Include="BulkLoading\BulkLoaderForPrimaryKeyTests.cs" />
+    <Compile Include="BulkLoading\BulkLoaderGeneralTests.cs" />
     <Compile Include="Data\SampleSurrogateKeyDifferentNamesDto.cs" />
     <Compile Include="Data\TestingDatabaseService.cs" />
     <Compile Include="Data\TestingDataGateway.cs" />
