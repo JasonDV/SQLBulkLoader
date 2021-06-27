@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <AssemblyName>ivaldez.Sql.SqlBulkLoader</AssemblyName>
+    <AssemblyName>ivaldez.SqlBulkLoader.PostgreSql</AssemblyName>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Copyright>Copyright 2021 Jason Valdez</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JasonDV/SQLBulkLoader</PackageProjectUrl>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <Description>A convention based wrapper around the SqlBulkCopy utility.</Description>
+    <Description>A convention based wrapper around the PostgreSQL binary COPY feature for bulk loading data.</Description>
     <NeutralLanguage>en</NeutralLanguage>
     <Version>1.0.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -16,13 +16,12 @@
     <Company>ivaldez</Company>
     <RepositoryUrl>https://github.com/JasonDV/SQLBulkLoader</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>SqlBulkCopy database mssql bulk sql</PackageTags>
+    <PackageTags>SqlBulkCopy database postgre postgresql bulk sql</PackageTags>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastMember" Version="1.5.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
+    <PackageReference Include="Npgsql" Version="5.0.7" />
   </ItemGroup>
 
 </Project>

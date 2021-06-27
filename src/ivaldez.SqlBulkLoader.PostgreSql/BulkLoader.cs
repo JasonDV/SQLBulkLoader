@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
-using FastMember;
+using Npgsql;
+using NpgsqlTypes;
 
-namespace ivaldez.Sql.SqlBulkLoader
+namespace ivaldez.SqlBulkLoader.PostgreSql
 {
     /// <summary>
     /// BulkLoader is a convention based wrapper for the SqlBulkCopy utility.
@@ -45,7 +45,7 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// <returns></returns>
         public BulkLoaderContext<T> InsertWithOptions<T>(
             string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             int batchSize = 5000)
@@ -71,7 +71,7 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// <param name="noBatch">Indicates that no batching should occur and all data should be written at once.</param>
         public void Insert<T>(
             string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             int batchSize = 5000,
@@ -101,7 +101,7 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// <param name="batchSize">The batch size of each bulk load.</param>
         /// <param name="noBatch">Indicates that no batching should occur and all data should be written at once.</param>
         public void Insert<T>(string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             List<string> propertiesToIgnore,
@@ -110,21 +110,14 @@ namespace ivaldez.Sql.SqlBulkLoader
             bool noBatch = false)
         {
             var targetProperties = GetTargetProperties<T>(propertiesToIgnore, renameFields);
-
-            var options = SqlBulkCopyOptions.CheckConstraints | SqlBulkCopyOptions.TableLock;
-
-            if (keepIdentityColumnValue)
-            {
-                options |= SqlBulkCopyOptions.KeepIdentity;
-            }
-
+            
             if (noBatch)
             {
-                BulkCopyWithNoBatching(tableName, conn, dataToInsert, options, targetProperties);
+                BulkCopyWithNoBatching(tableName, conn, dataToInsert, targetProperties);
             }
             else
             {
-                BulkCopyWithBatching(tableName, conn, dataToInsert, batchSize, options, targetProperties);
+                BulkCopyWithBatching(tableName, conn, dataToInsert, batchSize, targetProperties);
             }
         }
 
@@ -134,26 +127,31 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// </summary>
         public class SqlBulkCopyUtility: ISqlBulkCopyUtility
         {
-            public void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
+            public void BulkCopy<T>(string tableName, NpgsqlConnection conn,
                 TargetProperty[] targetProperties, IEnumerable<T> toInsert)
             {
-                using (var bulkCopy = new SqlBulkCopy(conn, options, null))
+                var propertyList = new List<string>();
+                foreach (var property in targetProperties)
                 {
-                    var parameters = targetProperties.Select(x => x.OriginalName).ToArray();
+                    propertyList.Add(property.Name.ToLower());
+                }
 
-                    using (var reader = ObjectReader.Create(toInsert, parameters))
+                var columnListString = string.Join(",", propertyList.Select(x => @"""" + x + @""""));
+                
+                using (var writer = conn
+                    .BeginBinaryImport($@"COPY ""{tableName}"" ({columnListString}) FROM STDIN (FORMAT BINARY)"))
+                {
+                    foreach (var dto in toInsert)
                     {
+                        writer.StartRow();
+
                         foreach (var property in targetProperties)
                         {
-                            bulkCopy.ColumnMappings.Add(property.OriginalName, property.Name);
+                            writer.Write(property.PropertyInfo.GetValue(dto));
                         }
-
-                        bulkCopy.BulkCopyTimeout = 900;
-                        bulkCopy.DestinationTableName = tableName;
-                        bulkCopy.WriteToServer(reader);
-
-                        bulkCopy.Close();
                     }
+                
+                    writer.Complete();
                 }
             }
         }
@@ -164,7 +162,7 @@ namespace ivaldez.Sql.SqlBulkLoader
         /// </summary>
         public interface ISqlBulkCopyUtility
         {
-            void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
+            void BulkCopy<T>(string tableName, NpgsqlConnection conn,
                 TargetProperty[] targetProperties, IEnumerable<T> toInsert);
         }
 
@@ -176,14 +174,14 @@ namespace ivaldez.Sql.SqlBulkLoader
             public string OriginalName { get; set; }
         }
 
-        private void BulkCopyWithNoBatching<T>(string tableName, SqlConnection conn, IEnumerable<T> dataToInsert,
-            SqlBulkCopyOptions options, TargetProperty[] targetProperties)
+        private void BulkCopyWithNoBatching<T>(string tableName, NpgsqlConnection conn, IEnumerable<T> dataToInsert,
+            TargetProperty[] targetProperties)
         {
-            _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, dataToInsert);
+            _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, dataToInsert);
         }
 
-        private void BulkCopyWithBatching<T>(string tableName, SqlConnection conn, IEnumerable<T> dataToInsert, int batchSize,
-            SqlBulkCopyOptions options, TargetProperty[] targetProperties)
+        private void BulkCopyWithBatching<T>(string tableName, NpgsqlConnection conn, IEnumerable<T> dataToInsert, int batchSize,
+            TargetProperty[] targetProperties)
         {
             var batch = new List<T>(batchSize);
 
@@ -193,14 +191,14 @@ namespace ivaldez.Sql.SqlBulkLoader
 
                 if (batch.Count >= batchSize)
                 {
-                    _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
+                    _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, batch);
                     batch.Clear();
                 }
             }
 
             if (batch.Any())
             {
-                _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
+                _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, batch);
                 batch.Clear();
             }
         }

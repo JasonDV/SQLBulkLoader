@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlClient;
+using Npgsql;
 
-namespace ivaldez.Sql.SqlBulkLoader
+namespace ivaldez.SqlBulkLoader.PostgreSql
 {
     /// <summary>
     /// BulkLoader is a convention based wrapper for the SqlBulkCopy utility.
@@ -11,7 +11,7 @@ namespace ivaldez.Sql.SqlBulkLoader
     {
         void Insert<T>(
             string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             int batchSize = 5000,
@@ -19,13 +19,13 @@ namespace ivaldez.Sql.SqlBulkLoader
 
         BulkLoaderContext<T> InsertWithOptions<T>(
             string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             int batchSize = 5000);
 
         void Insert<T>(string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             List<string> propertiesToIgnore,

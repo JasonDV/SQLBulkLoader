@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Linq.Expressions;
+using Npgsql;
 
-namespace ivaldez.Sql.SqlBulkLoader
+namespace ivaldez.SqlBulkLoader.PostgreSql
 {
     public class BulkLoaderContext<T>
     {
         private readonly IBulkLoader _bulkLoader;
-        private readonly SqlConnection _conn;
+        private readonly NpgsqlConnection _conn;
         private readonly IEnumerable<T> _dataToInsert;
         private readonly bool _keepIdentityColumnValue;
         private readonly Dictionary<string, string> _renameFields;
         private readonly string _tableName;
 
+        private string _identityOrSerialColumn;
         private readonly List<string> _withoutMembers;
         private int _batchSize;
         private bool _noBatch;
@@ -21,7 +23,7 @@ namespace ivaldez.Sql.SqlBulkLoader
         public BulkLoaderContext(
             IBulkLoader bulkLoader,
             string tableName,
-            SqlConnection conn,
+            NpgsqlConnection conn,
             bool keepIdentityColumnValue,
             IEnumerable<T> dataToInsert,
             int batchSize)
@@ -34,6 +36,15 @@ namespace ivaldez.Sql.SqlBulkLoader
             _keepIdentityColumnValue = keepIdentityColumnValue;
             _dataToInsert = dataToInsert;
             _batchSize = batchSize;
+        }
+
+        public BulkLoaderContext<T> IdentityColumn(Expression<Func<T, object>> expression)
+        {
+            var name = GetName(expression);
+
+            _identityOrSerialColumn = name;
+
+            return this;
         }
 
         public BulkLoaderContext<T> With(Expression<Func<T, object>> expression, string newName)
@@ -82,12 +93,25 @@ namespace ivaldez.Sql.SqlBulkLoader
 
         public void Execute()
         {
+            if (_keepIdentityColumnValue && _identityOrSerialColumn == null)
+            {
+                throw new ArgumentException($@"method ""{nameof(IdentityColumn)}"" must be called when ""keepIdentityColumnValue"" is True.");
+            }
+
+
+            var propertiesToIgnore = _withoutMembers.ToList();
+
+            if (_keepIdentityColumnValue == false && _identityOrSerialColumn != null)
+            {
+                propertiesToIgnore.Add(_identityOrSerialColumn);
+            }
+
             _bulkLoader.Insert(
                 _tableName,
                 _conn,
                 _keepIdentityColumnValue,
                 _dataToInsert,
-                _withoutMembers,
+                propertiesToIgnore,
                 _renameFields,
                 _batchSize,
                 _noBatch);

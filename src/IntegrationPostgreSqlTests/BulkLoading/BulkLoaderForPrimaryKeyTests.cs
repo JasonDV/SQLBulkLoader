@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using ivaldez.Sql.IntegrationTests.Data;
-using ivaldez.Sql.SqlBulkLoader;
+using ivaldez.Sql.IntegrationPostgreSqlTests.Data;
+using ivaldez.SqlBulkLoader.PostgreSql;
 using Xunit;
 
-namespace ivaldez.Sql.IntegrationTests.BulkLoading
+namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
 {
-    public class BulkLoaderTests
+    public class BulkLoaderForPrimaryKeyTests
     {
         [Fact]
-        public void ShouldBulkLoad()
+        public void ShouldInsertPrimaryKeyWhenKeepIdentityOptionIsTrue()
         {
             var testingDatabaseService = new TestingDatabaseService();
             testingDatabaseService.CreateTestDatabase();
@@ -39,25 +39,27 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
 
             dataGateway.ExecuteWithConnection(conn =>
             {
-                new BulkLoader()
-                    .InsertWithOptions("Sample", conn, true, dtos)
-                    .Without(c => c.Pk)
+                BulkLoaderFactory.Create()
+                    .InsertWithOptions("sample", conn, true, dtos)
+                    .IdentityColumn(c => c.Pk)
                     .Execute();
             });
 
             var databaseDtos = dataGateway.GetAllSampleSurrogateKey().ToArray();
 
             var firstDto = databaseDtos.First(x => x.TextValue == "JJ");
+            firstDto.Pk.Should().Be(100);
             firstDto.IntValue.Should().Be(100);
             firstDto.DecimalValue.Should().Be(100.99m);
 
             var secondDto = databaseDtos.First(x => x.TextValue == "ZZ");
+            secondDto.Pk.Should().Be(200);
             secondDto.IntValue.Should().Be(999);
             secondDto.DecimalValue.Should().Be(123.45m);
         }
 
         [Fact]
-        public void ShouldBulkLoadIntoPrimaryKey()
+        public void ShouldNotInsertPrimaryKeyWhenKeepIdentityOptionIsFalse()
         {
             var testingDatabaseService = new TestingDatabaseService();
             testingDatabaseService.CreateTestDatabase();
@@ -87,72 +89,21 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
 
             dataGateway.ExecuteWithConnection(conn =>
             {
-                new BulkLoader()
-                    .InsertWithOptions("Sample", conn, true, dtos)
+                BulkLoaderFactory.Create()
+                    .InsertWithOptions("sample", conn, false, dtos)
+                    .IdentityColumn(c => c.Pk)
                     .Execute();
             });
 
             var databaseDtos = dataGateway.GetAllSampleSurrogateKey().ToArray();
 
             var firstDto = databaseDtos.First(x => x.TextValue == "JJ");
-            firstDto.Pk.Should().Be(100);
+            firstDto.Pk.Should().NotBe(100);
             firstDto.IntValue.Should().Be(100);
             firstDto.DecimalValue.Should().Be(100.99m);
 
             var secondDto = databaseDtos.First(x => x.TextValue == "ZZ");
-            secondDto.Pk.Should().Be(200);
-            secondDto.IntValue.Should().Be(999);
-            secondDto.DecimalValue.Should().Be(123.45m);
-        }
-
-        [Fact]
-        public void ShouldRespectRenamedFields()
-        {
-            var testingDatabaseService = new TestingDatabaseService();
-            testingDatabaseService.CreateTestDatabase();
-
-            var dataGateway = new TestingDataGateway(testingDatabaseService);
-
-            dataGateway.DropTable();
-            dataGateway.CreateSingleSurrogateKeyTable();
-
-            var dtos = new[]
-            {
-                new SampleSurrogateKeyDifferentNamesDto
-                {
-                    Pk = 100,
-                    TextValueExtra = "JJ",
-                    IntValueExtra = 100,
-                    DecimalValueExtra = 100.99m
-                },
-                new SampleSurrogateKeyDifferentNamesDto
-                {
-                    Pk = 200,
-                    TextValueExtra = "ZZ",
-                    IntValueExtra = 999,
-                    DecimalValueExtra = 123.45m
-                }
-            };
-
-            dataGateway.ExecuteWithConnection(conn =>
-            {
-                new BulkLoader()
-                    .InsertWithOptions("Sample", conn, true, dtos)
-                    .With(c => c.TextValueExtra, "TextValue")
-                    .With(c => c.IntValueExtra, "IntValue")
-                    .With(c => c.DecimalValueExtra, "DecimalValue")
-                    .Execute();
-            });
-
-            var databaseDtos = dataGateway.GetAllSampleSurrogateKey().ToArray();
-
-            var firstDto = databaseDtos.First(x => x.TextValue == "JJ");
-            firstDto.Pk.Should().Be(100);
-            firstDto.IntValue.Should().Be(100);
-            firstDto.DecimalValue.Should().Be(100.99m);
-
-            var secondDto = databaseDtos.First(x => x.TextValue == "ZZ");
-            secondDto.Pk.Should().Be(200);
+            secondDto.Pk.Should().NotBe(200);
             secondDto.IntValue.Should().Be(999);
             secondDto.DecimalValue.Should().Be(123.45m);
         }
