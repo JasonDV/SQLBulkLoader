@@ -1,12 +1,14 @@
 SQL Bulk Loader
 ===============
-A convention based wrapper for the SQLBulkCopy utility. 
+A convention based wrapper to allow for bulk loading data into a SQL RDMS. 
 
 The purpose of this utility is to reduce the amount of code necessary to preform bulk inserts into database tables. This utility allows for bulk inserting with only a collection of DTOs and a call to the BulkLoader class. 
 
-The class is configurable and handles remapping fields between DTO and target table, ignoring DTO properties, and controlling batch size. As well, the bulk loader avoids using a DataTable to reduce the memory overhead of preforming the bulkcopy. 
+The class is configurable and handles remapping fields between DTO and target table, ignoring DTO properties, and controlling batch size. As well, the bulk loader avoids using a DataTable to reduce the memory overhead of preforming the SQLBulkCopy (SQL Server). The PostgreSQL version uses the binary COPY feature built into Postgre.  
 
-nuget: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader/
+Nuget: 
+* SQL Server: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader/
+* PostgreSQL: https://www.nuget.org/packages/ivaldez.SqlBulkLoader.PostgreSql/
 
 ## Targets
 
@@ -92,5 +94,8 @@ var dtos = new[]
 
 # Dependencies
 
-This utility is used to preform an efficient bulkcopy. Fast-member can create an efficient IDataReader that can feed directly into the SqlBulkCopy WriteToServer method. Normally, a DataTable is created for each batched write to the server.
+The SQL Server (SqlBulkCopy) version of this utility uses fast-member to create an efficient IDataReader that can feed directly into the SqlBulkCopy WriteToServer method. Normally, a DataTable is created for each batched write to the server.
 fast-member: https://github.com/mgravell/fast-member
+
+The PostgreSQL (COPY) verison of this utility uses the Npgsql data provider to interact with a PostgreSQL instance. 
+Npgsql: https://github.com/npgsql/npgsql
