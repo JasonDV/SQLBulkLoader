@@ -112,23 +112,14 @@ namespace ivaldez.SqlBulkLoader.PostgreSql
             bool noBatch = false)
         {
             var targetProperties = GetTargetProperties<T>(propertiesToIgnore, renameFields);
-
-            //var options = SqlBulkCopyOptions.CheckConstraints | SqlBulkCopyOptions.TableLock;
-
-            //if (keepIdentityColumnValue)
-            //{
-            //    options |= SqlBulkCopyOptions.KeepIdentity;
-            //}
-
-            SqlBulkCopyOptions options = null;
-
+            
             if (noBatch)
             {
-                BulkCopyWithNoBatching(tableName, conn, dataToInsert, options, targetProperties);
+                BulkCopyWithNoBatching(tableName, conn, dataToInsert, targetProperties);
             }
             else
             {
-                BulkCopyWithBatching(tableName, conn, dataToInsert, batchSize, options, targetProperties);
+                BulkCopyWithBatching(tableName, conn, dataToInsert, batchSize, targetProperties);
             }
         }
 
@@ -138,7 +129,7 @@ namespace ivaldez.SqlBulkLoader.PostgreSql
         /// </summary>
         public class SqlBulkCopyUtility: ISqlBulkCopyUtility
         {
-            public void BulkCopy<T>(string tableName, NpgsqlConnection conn, SqlBulkCopyOptions options,
+            public void BulkCopy<T>(string tableName, NpgsqlConnection conn,
                 TargetProperty[] targetProperties, IEnumerable<T> toInsert)
             {
                 var propertyList = new List<string>();
@@ -173,7 +164,7 @@ namespace ivaldez.SqlBulkLoader.PostgreSql
         /// </summary>
         public interface ISqlBulkCopyUtility
         {
-            void BulkCopy<T>(string tableName, NpgsqlConnection conn, SqlBulkCopyOptions options,
+            void BulkCopy<T>(string tableName, NpgsqlConnection conn,
                 TargetProperty[] targetProperties, IEnumerable<T> toInsert);
         }
 
@@ -185,19 +176,14 @@ namespace ivaldez.SqlBulkLoader.PostgreSql
             public string OriginalName { get; set; }
         }
 
-        public class SqlBulkCopyOptions
-        {
-
-        }
-
         private void BulkCopyWithNoBatching<T>(string tableName, NpgsqlConnection conn, IEnumerable<T> dataToInsert,
-            SqlBulkCopyOptions options, TargetProperty[] targetProperties)
+            TargetProperty[] targetProperties)
         {
-            _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, dataToInsert);
+            _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, dataToInsert);
         }
 
         private void BulkCopyWithBatching<T>(string tableName, NpgsqlConnection conn, IEnumerable<T> dataToInsert, int batchSize,
-            SqlBulkCopyOptions options, TargetProperty[] targetProperties)
+            TargetProperty[] targetProperties)
         {
             var batch = new List<T>(batchSize);
 
@@ -207,14 +193,14 @@ namespace ivaldez.SqlBulkLoader.PostgreSql
 
                 if (batch.Count >= batchSize)
                 {
-                    _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
+                    _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, batch);
                     batch.Clear();
                 }
             }
 
             if (batch.Any())
             {
-                _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
+                _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, batch);
                 batch.Clear();
             }
         }

@@ -8,8 +8,8 @@
     <ProjectGuid>{C15AA0BA-7C38-4CCA-9BC1-2F530C051445}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IntegrationShared</RootNamespace>
-    <AssemblyName>IntegrationShared</AssemblyName>
+    <RootNamespace>ivaldez.Sql.IntegrationShared</RootNamespace>
+    <AssemblyName>ivaldez.Sql.IntegrationShared</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

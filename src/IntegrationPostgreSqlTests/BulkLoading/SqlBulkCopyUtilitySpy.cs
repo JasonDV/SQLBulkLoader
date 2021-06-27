@@ -10,7 +10,6 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
 
         public void BulkCopy<T>(string tableName,
             NpgsqlConnection conn, 
-            BulkLoader.SqlBulkCopyOptions options,
             BulkLoader.TargetProperty[] targetProperties,
             IEnumerable<T> toInsert)
         {
@@ -19,7 +18,6 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
             new BulkLoader.SqlBulkCopyUtility()
                 .BulkCopy(tableName,
                     conn, 
-                    options,
                     targetProperties,
                     toInsert);
         }
