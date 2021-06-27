@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using ivaldez.Sql.SqlBulkLoader;
 
-namespace ivaldez.Sql.IntegrationTests.BulkLoading
+namespace ivaldez.Sql.IntegrationSqlServerTests.BulkLoading
 {
     public class SqlBulkCopyUtilitySpy: BulkLoader.ISqlBulkCopyUtility
     {

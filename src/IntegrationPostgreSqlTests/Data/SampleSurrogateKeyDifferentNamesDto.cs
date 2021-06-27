@@ -1,4 +1,4 @@
-﻿namespace ivaldez.Sql.IntegrationTests.Data
+﻿namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
 {
     public class SampleSurrogateKeyDifferentNamesDto
     {

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyName>ivaldez.SqlBulkLoader.PostgreSql</AssemblyName>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Copyright>Copyright 2019 Jason Valdez</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/JasonDV/SQLBulkLoader</PackageProjectUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <Description>A convention based wrapper around the SqlBulkCopy utility.</Description>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>1.0.0.7</Version>
+    <AssemblyVersion>1.0.0.7</AssemblyVersion>
+    <Authors>Jason Valdez</Authors>
+    <Company>ivaldez</Company>
+    <RepositoryUrl>https://github.com/JasonDV/SQLBulkLoader</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>SqlBulkCopy database mssql</PackageTags>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastMember" Version="1.5.0" />
+    <PackageReference Include="Npgsql" Version="5.0.7" />
+  </ItemGroup>
+
+</Project>

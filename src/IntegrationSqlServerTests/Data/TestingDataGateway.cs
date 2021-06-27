@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace ivaldez.Sql.IntegrationTests.Data
+namespace ivaldez.Sql.IntegrationSqlServerTests.Data
 {
     public class TestingDataGateway
     {
