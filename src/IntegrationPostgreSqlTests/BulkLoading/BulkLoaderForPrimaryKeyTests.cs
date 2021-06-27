@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using FluentAssertions;
-using ivaldez.Sql.IntegrationTests.Data;
-using ivaldez.Sql.SqlBulkLoader;
+using ivaldez.Sql.IntegrationPostgreSqlTests.Data;
+using ivaldez.SqlBulkLoader.PostgreSql;
 using Xunit;
 
-namespace ivaldez.Sql.IntegrationTests.BulkLoading
+namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
 {
     public class BulkLoaderForPrimaryKeyTests
     {
@@ -44,7 +40,8 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
             dataGateway.ExecuteWithConnection(conn =>
             {
                 BulkLoaderFactory.Create()
-                    .InsertWithOptions("Sample", conn, true, dtos)
+                    .InsertWithOptions("sample", conn, true, dtos)
+                    .IdentityColumn(c => c.Pk)
                     .Execute();
             });
 
@@ -93,7 +90,8 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
             dataGateway.ExecuteWithConnection(conn =>
             {
                 BulkLoaderFactory.Create()
-                    .InsertWithOptions("Sample", conn, false, dtos)
+                    .InsertWithOptions("sample", conn, false, dtos)
+                    .IdentityColumn(c => c.Pk)
                     .Execute();
             });
 

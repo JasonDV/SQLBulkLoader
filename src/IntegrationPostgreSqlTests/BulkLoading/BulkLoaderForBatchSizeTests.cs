@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using ivaldez.Sql.IntegrationTests.Data;
-using ivaldez.Sql.SqlBulkLoader;
+using ivaldez.Sql.IntegrationPostgreSqlTests.Data;
+using ivaldez.SqlBulkLoader.PostgreSql;
 using Xunit;
 
-namespace ivaldez.Sql.IntegrationTests.BulkLoading
+namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
 {
     public class BulkLoaderForBatchSizeTests
     {
@@ -42,7 +42,8 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
             dataGateway.ExecuteWithConnection(conn =>
             {
                 new BulkLoader(sqlBulkCopyUtilitySpy)
-                    .InsertWithOptions("Sample", conn, true, dtos)
+                    .InsertWithOptions("sample", conn, true, dtos)
+                    .IdentityColumn(c => c.Pk)
                     .SetBatchSize(1)
                     .Execute();
             });

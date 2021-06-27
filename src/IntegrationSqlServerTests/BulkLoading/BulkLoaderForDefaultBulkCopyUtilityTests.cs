@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using ivaldez.Sql.IntegrationTests.Data;
+using ivaldez.Sql.IntegrationSqlServerTests.Data;
 using ivaldez.Sql.SqlBulkLoader;
 using Xunit;
 
-namespace ivaldez.Sql.IntegrationTests.BulkLoading
+namespace ivaldez.Sql.IntegrationSqlServerTests.BulkLoading
 {
-    public class BulkLoaderGeneralTests
+    public class BulkLoaderForDefaultBulkCopyUtilityTests
     {
         [Fact]
-        public void ShouldBulkLoad()
+        public void ShouldUseDefaultBulkCopyUtilityWhenNoConstructorParams()
         {
             var testingDatabaseService = new TestingDatabaseService();
             testingDatabaseService.CreateTestDatabase();
@@ -39,7 +39,7 @@ namespace ivaldez.Sql.IntegrationTests.BulkLoading
 
             dataGateway.ExecuteWithConnection(conn =>
             {
-                BulkLoaderFactory.Create()
+                new BulkLoader()
                     .InsertWithOptions("Sample", conn, true, dtos)
                     .Without(c => c.Pk)
                     .Execute();

@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Dapper;
+using Npgsql;
 
-namespace ivaldez.Sql.IntegrationTests.Data
+namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
 {
     public class TestingDatabaseService
     {
-        private static readonly string DatabaseName = "iValdezTest";
-        private readonly string _connectionString = $"Data Source=localhost;Initial Catalog={DatabaseName};Integrated Security=true;";
-        private readonly string _connectionStringMaster = $"Data Source=localhost;Initial Catalog=master;Integrated Security=true;";
+        private static readonly string DatabaseName = "iValdezTest".ToLower();
+        private readonly string _connectionString = $"Host=localhost;Username=postgres;Password=example;Database={DatabaseName};";
+        private readonly string _connectionStringMaster = $"Host=localhost;Username=postgres;Password=example;Database=postgres;";
 
         public IEnumerable<T> Query<T>(string sql, object param = null)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var conn = new NpgsqlConnection(_connectionString))
             {
                 var results = conn.Query<T>(sql, param);
 
@@ -26,7 +27,7 @@ namespace ivaldez.Sql.IntegrationTests.Data
 
         public int Insert<T>(string sql, IEnumerable<T> dtos)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var conn = new NpgsqlConnection(_connectionString))
             {
                 var result = conn.Execute(sql, dtos);
 
@@ -36,7 +37,7 @@ namespace ivaldez.Sql.IntegrationTests.Data
 
         public int Execute(string sql, object param = null)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var conn = new NpgsqlConnection(_connectionString))
             {
                 var result = conn.Execute(sql, param);
 
@@ -44,9 +45,9 @@ namespace ivaldez.Sql.IntegrationTests.Data
             }
         }
 
-        public void WithConnection(Action<SqlConnection> action)
+        public void WithConnection(Action<NpgsqlConnection> action)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var conn = new NpgsqlConnection(_connectionString))
             {
                 conn.Open();
                 action(conn);
@@ -56,13 +57,13 @@ namespace ivaldez.Sql.IntegrationTests.Data
 
         public void CreateTestDatabase()
         {
-            using (var connection = new SqlConnection(_connectionStringMaster))
+            using (var connection = new NpgsqlConnection(_connectionStringMaster))
             {
                 connection.Open();
                 bool result;
-                using (var command2 = new SqlCommand($"SELECT db_id('{DatabaseName}')", connection))
+                using (var command2 = new NpgsqlCommand($"SELECT 1 FROM pg_database WHERE datname='{DatabaseName}'", connection))
                 {
-                    result = (command2.ExecuteScalar() != DBNull.Value);
+                    result = (command2.ExecuteScalar() != null);
                 }
 
                 if (result == false)
