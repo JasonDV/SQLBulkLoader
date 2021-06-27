@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <AssemblyName>ivaldez.Sql.SqlBulkLoader</AssemblyName>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <Copyright>Copyright 2019 Jason Valdez</Copyright>
+    <Copyright>Copyright 2021 Jason Valdez</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JasonDV/SQLBulkLoader</PackageProjectUrl>
     <PackageReleaseNotes></PackageReleaseNotes>
@@ -16,7 +16,7 @@
     <Company>ivaldez</Company>
     <RepositoryUrl>https://github.com/JasonDV/SQLBulkLoader</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>SqlBulkCopy database mssql</PackageTags>
+    <PackageTags>SqlBulkCopy database mssql bulk sql</PackageTags>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
