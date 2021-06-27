@@ -79,6 +79,10 @@
       <Project>{2570e931-33d4-4d86-b49d-d27f7ed29265}</Project>
       <Name>IntegrationSqlServerTests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharedTestFramework\SharedTestFramework.csproj">
+      <Project>{692d1c7c-4403-468b-b2e8-51da8ef0c654}</Project>
+      <Name>SharedTestFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
