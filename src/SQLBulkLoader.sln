@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DC9E2863-F9DB-4535-8D53-DE305ED1673D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{2570E931-33D4-4D86-B49D-D27F7ED29265}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ivaldez.Sql.SqlBulkLoader", "ivaldez.SqlBulkLoader\ivaldez.Sql.SqlBulkLoader.csproj", "{B1ED27A4-5433-4BCD-9ADE-E477CCCE1F03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ivaldez.Sql.SqlBulkLoader", "ivaldez.SqlBulkLoader\ivaldez.Sql.SqlBulkLoader.csproj", "{B1ED27A4-5433-4BCD-9ADE-E477CCCE1F03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ivaldez.SqlBulkLoader.PostgreSql", "ivaldez.SqlBulkLoader.PostgreSql\ivaldez.SqlBulkLoader.PostgreSql.csproj", "{3CAF26E8-067F-4D30-A895-D9295A208735}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationPostgreSqlTests", "IntegrationPostgreSqlTests\IntegrationPostgreSqlTests.csproj", "{4EDE707B-D415-41CE-8903-7A25B43D5898}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationSqlServerTests", "IntegrationSqlServerTests\IntegrationSqlServerTests.csproj", "{2570E931-33D4-4D86-B49D-D27F7ED29265}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,19 +19,28 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1ED27A4-5433-4BCD-9ADE-E477CCCE1F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1ED27A4-5433-4BCD-9ADE-E477CCCE1F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1ED27A4-5433-4BCD-9ADE-E477CCCE1F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1ED27A4-5433-4BCD-9ADE-E477CCCE1F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CAF26E8-067F-4D30-A895-D9295A208735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CAF26E8-067F-4D30-A895-D9295A208735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CAF26E8-067F-4D30-A895-D9295A208735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CAF26E8-067F-4D30-A895-D9295A208735}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EDE707B-D415-41CE-8903-7A25B43D5898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EDE707B-D415-41CE-8903-7A25B43D5898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EDE707B-D415-41CE-8903-7A25B43D5898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EDE707B-D415-41CE-8903-7A25B43D5898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{4EDE707B-D415-41CE-8903-7A25B43D5898} = {DC9E2863-F9DB-4535-8D53-DE305ED1673D}
 		{2570E931-33D4-4D86-B49D-D27F7ED29265} = {DC9E2863-F9DB-4535-8D53-DE305ED1673D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
