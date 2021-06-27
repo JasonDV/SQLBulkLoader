@@ -20,7 +20,9 @@ var rootDir = Directory ("./");
 var sourceDir = Directory ("./src");
 var buildDir = Directory ("./localBuild");
 var solutionOutputDir = Directory (buildDir.Path + "/SQLBulkLoaderSolution");
-var integrationTestOutputDir = Directory (buildDir.Path + "/IntegrationTests");
+var IntegrationSqlServerTestsOutputDir = Directory (buildDir.Path + "/IntegrationSqlServerTests");
+var IntegrationPostgreSqlOutputDir = Directory (buildDir.Path + "/IntegrationPostgreSqlTests");
+var IntegrationSharedOutputDir = Directory (buildDir.Path + "/IntegrationSharedTests");
 var sqlBulkLoaderOutputDir = Directory (buildDir.Path + "/SQLBulkLoaderUtility");
 
 //////////////////////////////////////////////////////////////////////
@@ -52,18 +54,46 @@ Task ("BuildSolution")
         MSBuild (sourceDir.Path + "/SQLBulkLoader.sln", settings);
     });
 
-Task ("BuildIntegrationTests")
+Task ("BuildIntegrationSqlServerTests")
     .IsDependentOn ("Restore-NuGet-Packages")
     .Does (() => {
         var settings = new MSBuildSettings ()
             .SetConfiguration (configuration)
             .SetVerbosity (Verbosity.Minimal)
-            .WithProperty ("OutDir", MakeAbsolute (integrationTestOutputDir).FullPath)
+            .WithProperty ("OutDir", MakeAbsolute (IntegrationSqlServerTestsOutputDir).FullPath)
             .WithProperty ("Version", version)
             .WithProperty ("AssemblyVersion", version)
             .WithProperty ("FileVersion", version);
 
-        MSBuild (sourceDir.Path + "/IntegrationTests/IntegrationTests.csproj", settings);
+        MSBuild (sourceDir.Path + "/IntegrationSqlServerTests/IntegrationSqlServerTests.csproj", settings);
+    });
+
+Task ("BuildIntegrationSharedTests")
+    .IsDependentOn ("Restore-NuGet-Packages")
+    .Does (() => {
+        var settings = new MSBuildSettings ()
+            .SetConfiguration (configuration)
+            .SetVerbosity (Verbosity.Minimal)
+            .WithProperty ("OutDir", MakeAbsolute (IntegrationSharedOutputDir).FullPath)
+            .WithProperty ("Version", version)
+            .WithProperty ("AssemblyVersion", version)
+            .WithProperty ("FileVersion", version);
+
+        MSBuild (sourceDir.Path + "/IntegrationShared/IntegrationCompatibilityTests.csproj", settings);
+    });
+
+Task ("BuildIntegrationPostgreSqlTests")
+    .IsDependentOn ("Restore-NuGet-Packages")
+    .Does (() => {
+        var settings = new MSBuildSettings ()
+            .SetConfiguration (configuration)
+            .SetVerbosity (Verbosity.Minimal)
+            .WithProperty ("OutDir", MakeAbsolute (IntegrationPostgreSqlOutputDir).FullPath)
+            .WithProperty ("Version", version)
+            .WithProperty ("AssemblyVersion", version)
+            .WithProperty ("FileVersion", version);
+
+        MSBuild (sourceDir.Path + "/IntegrationPostgreSqlTests/IntegrationPostgreSqlTests.csproj", settings);
     });
 
 Task ("BuildSqlBulkLoader")
@@ -81,13 +111,19 @@ Task ("BuildSqlBulkLoader")
     });
 
 Task ("Run-Unit-Tests")
-    .IsDependentOn ("BuildIntegrationTests")
+    .IsDependentOn ("BuildIntegrationSqlServerTests")
+    .IsDependentOn ("BuildIntegrationPostgreSqlTests")
+    .IsDependentOn ("BuildIntegrationSharedTests") 
     .Does (() => {
         Information ("Start Running Tests");
-        XUnit2 (integrationTestOutputDir.Path + "/*Tests.dll");
+        XUnit2 (IntegrationSqlServerTestsOutputDir.Path + "/*Tests.dll");
+
+        XUnit2 (IntegrationPostgreSqlOutputDir.Path + "/*Tests.dll");
+
+        XUnit2 (IntegrationSharedOutputDir.Path + "/ivaldez.Sql.IntegrationShared.dll");
     });
 
-Task ("BuildPackages")
+Task ("BuildSqlServerPackages")
     .IsDependentOn ("Restore-NuGet-Packages")
     .IsDependentOn ("BuildSqlBulkLoader")
     .Does (() => {
@@ -105,13 +141,37 @@ Task ("BuildPackages")
         DotNetCorePack (projectPath, settings);
     });
 
+Task ("BuildPostgrePackages")
+    .IsDependentOn ("Restore-NuGet-Packages")
+    .IsDependentOn ("BuildSqlBulkLoader")
+    .Does (() => {
+        var settings = new DotNetCorePackSettings {
+            Configuration = "Release",
+            OutputDirectory = buildDir.Path,
+            IncludeSource = true,
+            IncludeSymbols = true
+        };
+        var projectPath = sourceDir.Path + "/ivaldez.SqlBulkLoader.PostgreSql/ivaldez.SqlBulkLoader.PostgreSql.csproj";
+
+        XmlPoke(projectPath, "/Project/PropertyGroup/Version", version);
+        XmlPoke(projectPath, "/Project/PropertyGroup/AssemblyVersion", version);
+
+        DotNetCorePack (projectPath, settings);
+    });
+
+Task ("BuildPackages")
+    .IsDependentOn ("BuildSqlServerPackages")
+    .IsDependentOn ("BuildPostgrePackages");
+
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 
 Task ("Default")
     .IsDependentOn ("BuildSolution")
-    .IsDependentOn ("BuildIntegrationTests")
+    .IsDependentOn ("BuildIntegrationSqlServerTests")
+    .IsDependentOn ("BuildIntegrationPostgreSqlTests")
+    .IsDependentOn ("BuildIntegrationSharedTests") 
     .IsDependentOn ("BuildSqlBulkLoader")    
     .IsDependentOn ("Run-Unit-Tests")
     .IsDependentOn ("BuildPackages");
