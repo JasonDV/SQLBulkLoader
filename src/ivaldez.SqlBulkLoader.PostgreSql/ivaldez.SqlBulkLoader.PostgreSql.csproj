@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <AssemblyName>ivaldez.Sql.SqlBulkLoader</AssemblyName>
+    <AssemblyName>ivaldez.SqlBulkLoader.PostgreSql</AssemblyName>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Copyright>Copyright 2019 Jason Valdez</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="FastMember" Version="1.5.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
+    <PackageReference Include="Npgsql" Version="5.0.7" />
   </ItemGroup>
 
 </Project>
