@@ -6,10 +6,12 @@
 var target = Argument ("target", "Default");
 var configuration = Argument ("configuration", "Release");
 var version = Argument ("build_version", "1.0.0.0");
+var releaseCandidate = Argument ("release_candidate", "0");
 
 Information("target: {0}", target);
 Information("configuration: {0}", configuration);
 Information("build_version: {0}", version);
+Information("release_candidate: {0}", releaseCandidate);
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -135,7 +137,12 @@ Task ("BuildSqlServerPackages")
         };
         var projectPath = sourceDir.Path + "/ivaldez.SqlBulkLoader/ivaldez.Sql.SqlBulkLoader.csproj";
 
-        XmlPoke(projectPath, "/Project/PropertyGroup/Version", version);
+        var package_version = version;
+        if (releaseCandidate != "0"){
+            package_version = package_version + "-rc" + releaseCandidate;
+        }
+
+        XmlPoke(projectPath, "/Project/PropertyGroup/Version", package_version);
         XmlPoke(projectPath, "/Project/PropertyGroup/AssemblyVersion", version);
 
         DotNetCorePack (projectPath, settings);
@@ -152,8 +159,13 @@ Task ("BuildPostgrePackages")
             IncludeSymbols = true
         };
         var projectPath = sourceDir.Path + "/ivaldez.SqlBulkLoader.PostgreSql/ivaldez.SqlBulkLoader.PostgreSql.csproj";
+      
+        var package_version = version;
+        if (releaseCandidate != "0"){
+            package_version = package_version + "-rc" + releaseCandidate;
+        }
 
-        XmlPoke(projectPath, "/Project/PropertyGroup/Version", version);
+        XmlPoke(projectPath, "/Project/PropertyGroup/Version", package_version);
         XmlPoke(projectPath, "/Project/PropertyGroup/AssemblyVersion", version);
 
         DotNetCorePack (projectPath, settings);
