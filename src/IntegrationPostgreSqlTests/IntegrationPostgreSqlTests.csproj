@@ -106,6 +106,7 @@
     <Compile Include="BulkLoading\BulkLoaderForFieldOptionsTests.cs" />
     <Compile Include="BulkLoading\BulkLoaderForPrimaryKeyTests.cs" />
     <Compile Include="BulkLoading\BulkLoaderForDefaultBulkCopyUtilityTests.cs" />
+    <Compile Include="ImplementationSpecific\BulkLoading\BulkLoaderForPrimaryKeyTests.cs" />
     <Compile Include="BulkLoading\BulkLoaderGeneralTests.cs" />
     <Compile Include="BulkLoading\SqlBulkCopyUtilitySpy.cs" />
     <Compile Include="Data\SampleSurrogateKeyDifferentNamesDto.cs" />
@@ -126,10 +127,15 @@
       <Project>{3caf26e8-067f-4d30-a895-d9295a208735}</Project>
       <Name>ivaldez.SqlBulkLoader.PostgreSql</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharedTestFramework\SharedTestFramework.csproj">
+      <Project>{692D1C7C-4403-468B-B2E8-51DA8EF0C654}</Project>
+      <Name>SharedTestFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

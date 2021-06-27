@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
-using ivaldez.Sql.IntegrationTests.Data;
+using ivaldez.Sql.IntegrationSqlServerTests.Data;
 using ivaldez.Sql.SqlBulkLoader;
 using Xunit;
 
-namespace ivaldez.Sql.IntegrationTests.BulkLoading
+namespace ivaldez.Sql.IntegrationSqlServerTests.BulkLoading
 {
     public class BulkLoaderForNoBatchTests
     {

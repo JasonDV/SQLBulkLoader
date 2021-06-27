@@ -1,4 +1,4 @@
-﻿namespace ivaldez.Sql.IntegrationTests.Data
+﻿namespace ivaldez.Sql.IntegrationSqlServerTests.Data
 {
     public class SampleSurrogateKeyDifferentNamesDto
     {

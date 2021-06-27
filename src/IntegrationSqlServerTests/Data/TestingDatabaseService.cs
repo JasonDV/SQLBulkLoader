@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using Dapper;
 
-namespace ivaldez.Sql.IntegrationTests.Data
+namespace ivaldez.Sql.IntegrationSqlServerTests.Data
 {
     public class TestingDatabaseService
     {

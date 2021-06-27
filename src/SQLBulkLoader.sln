@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationPostgreSqlTests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationSqlServerTests", "IntegrationSqlServerTests\IntegrationSqlServerTests.csproj", "{2570E931-33D4-4D86-B49D-D27F7ED29265}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationCompatibilityTests", "IntegrationShared\IntegrationCompatibilityTests.csproj", "{C15AA0BA-7C38-4CCA-9BC1-2F530C051445}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTestFramework", "SharedTestFramework\SharedTestFramework.csproj", "{692D1C7C-4403-468B-B2E8-51DA8EF0C654}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,14 @@ Global
 		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2570E931-33D4-4D86-B49D-D27F7ED29265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C15AA0BA-7C38-4CCA-9BC1-2F530C051445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C15AA0BA-7C38-4CCA-9BC1-2F530C051445}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C15AA0BA-7C38-4CCA-9BC1-2F530C051445}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C15AA0BA-7C38-4CCA-9BC1-2F530C051445}.Release|Any CPU.Build.0 = Release|Any CPU
+		{692D1C7C-4403-468B-B2E8-51DA8EF0C654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692D1C7C-4403-468B-B2E8-51DA8EF0C654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692D1C7C-4403-468B-B2E8-51DA8EF0C654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692D1C7C-4403-468B-B2E8-51DA8EF0C654}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +54,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4EDE707B-D415-41CE-8903-7A25B43D5898} = {DC9E2863-F9DB-4535-8D53-DE305ED1673D}
 		{2570E931-33D4-4D86-B49D-D27F7ED29265} = {DC9E2863-F9DB-4535-8D53-DE305ED1673D}
+		{C15AA0BA-7C38-4CCA-9BC1-2F530C051445} = {DC9E2863-F9DB-4535-8D53-DE305ED1673D}
+		{692D1C7C-4403-468B-B2E8-51DA8EF0C654} = {DC9E2863-F9DB-4535-8D53-DE305ED1673D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D94FBDA9-C4AB-4655-AAFD-1E52A2ABE761}

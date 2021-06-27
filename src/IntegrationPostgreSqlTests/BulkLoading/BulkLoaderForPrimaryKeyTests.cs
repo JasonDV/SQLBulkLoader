@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using ivaldez.Sql.IntegrationPostgreSqlTests.Data;
 using ivaldez.SqlBulkLoader.PostgreSql;
@@ -107,41 +106,6 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
             secondDto.Pk.Should().NotBe(200);
             secondDto.IntValue.Should().Be(999);
             secondDto.DecimalValue.Should().Be(123.45m);
-        }
-
-        [Fact]
-        public void ShouldThrowErrorIfIdentityValueIsNotSupplied()
-        {
-            var testingDatabaseService = new TestingDatabaseService();
-            testingDatabaseService.CreateTestDatabase();
-
-            var dataGateway = new TestingDataGateway(testingDatabaseService);
-
-            dataGateway.DropTable();
-            dataGateway.CreateSingleSurrogateKeyTable();
-
-            var dtos = new[]
-            {
-                new SampleSurrogateKey
-                {
-                    Pk = 100,
-                    TextValue = "JJ",
-                    IntValue = 100,
-                    DecimalValue = 100.99m
-                }
-            };
-
-            var exception = Assert.Throws<ArgumentException>(() =>
-            {
-                dataGateway.ExecuteWithConnection(conn =>
-                {
-                    BulkLoaderFactory.Create()
-                        .InsertWithOptions("sample", conn, true, dtos)
-                        .Execute();
-                });
-            });
-
-            exception.Message.Should().Contain(@"must be called when ""keepIdentityColumnValue"" is True.");
         }
     }
 }
