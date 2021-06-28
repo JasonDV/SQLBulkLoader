@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using ivaldez.Sql.IntegrationPostgreSqlTests.Data;
-using ivaldez.SqlBulkLoader.PostgreSql;
+using ivaldez.Sql.SqlBulkLoader.PostgreSql;
 using Xunit;
 
 namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
