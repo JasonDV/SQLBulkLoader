@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ivaldez.SqlBulkLoader.PostgreSql;
+using ivaldez.Sql.SqlBulkLoader.PostgreSql;
 using Npgsql;
 
 namespace ivaldez.Sql.IntegrationPostgreSqlTests.BulkLoading
