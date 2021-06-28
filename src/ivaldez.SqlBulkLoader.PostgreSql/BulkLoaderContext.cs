@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Npgsql;
 
-namespace ivaldez.SqlBulkLoader.PostgreSql
+namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
 {
     public class BulkLoaderContext<T>
     {

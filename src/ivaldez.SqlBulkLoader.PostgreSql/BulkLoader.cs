@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Npgsql;
-using NpgsqlTypes;
 
-namespace ivaldez.SqlBulkLoader.PostgreSql
+namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
 {
     /// <summary>
     /// BulkLoader is a convention based wrapper for the SqlBulkCopy utility.

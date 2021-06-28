@@ -123,9 +123,9 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.8.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ivaldez.SqlBulkLoader.PostgreSql\ivaldez.SqlBulkLoader.PostgreSql.csproj">
-      <Project>{3caf26e8-067f-4d30-a895-d9295a208735}</Project>
-      <Name>ivaldez.SqlBulkLoader.PostgreSql</Name>
+    <ProjectReference Include="..\ivaldez.SqlBulkLoader.PostgreSql\ivaldez.Sql.SqlBulkLoader.PostgreSql.csproj">
+      <Project>{18B45E34-03AE-4A80-B6F0-BB37DADB8003}</Project>
+      <Name>ivaldez.Sql.SqlBulkLoader.PostgreSql</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedTestFramework\SharedTestFramework.csproj">
       <Project>{692D1C7C-4403-468B-B2E8-51DA8EF0C654}</Project>

@@ -158,7 +158,7 @@ Task ("BuildPostgrePackages")
             IncludeSource = true,
             IncludeSymbols = true
         };
-        var projectPath = sourceDir.Path + "/ivaldez.SqlBulkLoader.PostgreSql/ivaldez.SqlBulkLoader.PostgreSql.csproj";
+        var projectPath = sourceDir.Path + "/ivaldez.SqlBulkLoader.PostgreSql/ivaldez.Sql.SqlBulkLoader.PostgreSql.csproj";
       
         var package_version = version;
         if (releaseCandidate != "0"){
