@@ -8,7 +8,7 @@ The class is configurable and handles remapping fields between DTO and target ta
 
 Nuget: 
 * SQL Server: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader/
-* PostgreSQL: https://www.nuget.org/packages/ivaldez.SqlBulkLoader.PostgreSql/
+* PostgreSQL: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader.PostgreSql/
 
 ## Targets
 
