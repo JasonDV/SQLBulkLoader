@@ -10,7 +10,17 @@ Nuget:
 * SQL Server: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader/
 * PostgreSQL: https://www.nuget.org/packages/ivaldez.Sql.SqlBulkLoader.PostgreSql/
 
-## Targets
+## Development Environment Setup
+
+1. Make a copy of the file ".localconfig_example"
+1. Rename to ".localconfig"
+    1. This file contains the local configuration for the tests.
+1. A docker script is defined for the databases
+    1. Navigate to /docs/TestDatabases
+    1. run "docker compose up"
+    1. Once the docker images are running, all tests should pass when run with the default ".localconfig" file.
+
+## Package Targets
 
 * .NETFramework 4.6.1
 * .NETStandard 2.0
