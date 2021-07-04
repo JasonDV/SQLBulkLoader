@@ -1,7 +1,7 @@
 {
 	"DatabaseName": "iValdezTest",
-	"SqlExpressConnectionString": "Data Source=localhost;Initial Catalog=iValdezTest;Integrated Security=true;",
-	"SqlExpressMasterConnectionString": "Data Source=localhost;Initial Catalog=master;Integrated Security=true;",
-	"PostgreSqlConnectionString": "Host=localhost;Username=postgres;Password=example;Database=ivaldeztest;",
-	"PostgreSqlMasterConnectionString": "Host=localhost;Username=postgres;Password=example;Database=postgres;"
+	"SqlExpressConnectionString": "Data Source=localhost,9933;Initial Catalog=iValdezTest;User Id='sa';Password='Example123'",
+	"SqlExpressMasterConnectionString": "Data Source=localhost,9933;Initial Catalog=master;User Id='sa';Password='Example123'",
+	"PostgreSqlConnectionString": "Host=localhost;Port=5432;Username='postgres';Password='example';Database=ivaldeztest;",
+	"PostgreSqlMasterConnectionString": "Host=localhost;Port=5432;Username='postgres';Password='example';Database=postgres;"
 }

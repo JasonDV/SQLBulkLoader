@@ -10,7 +10,7 @@ namespace ivaldez.Sql.IntegrationSqlServerTests.Data
     {
         public TestingDatabaseService()
         {
-            _connectionString = LocalConfig.Instance.SqlExpressMasterConnectionString;
+            _connectionString = LocalConfig.Instance.SqlExpressConnectionString;
             _connectionStringMaster = LocalConfig.Instance.SqlExpressMasterConnectionString;
             _databaseName = LocalConfig.Instance.DatabaseName;
         }
