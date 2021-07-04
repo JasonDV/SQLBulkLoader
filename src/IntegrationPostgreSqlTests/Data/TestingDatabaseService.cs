@@ -33,16 +33,6 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
             }
         }
 
-        public int Insert<T>(string sql, IEnumerable<T> dtos)
-        {
-            using (var conn = new NpgsqlConnection(_connectionString))
-            {
-                var result = conn.Execute(sql, dtos);
-
-                return result;
-            }
-        }
-
         public int Execute(string sql, object param = null)
         {
             using (var conn = new NpgsqlConnection(_connectionString))
