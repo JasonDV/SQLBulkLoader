@@ -6,6 +6,9 @@
 tools/**
 !tools/packages.config
 
+# Local
+.localconfig
+
 #Visual Studio Files
 [Oo]bj
 [Bb]in

@@ -92,6 +92,10 @@
       <Project>{b1ed27a4-5433-4bcd-9ade-e477ccce1f03}</Project>
       <Name>ivaldez.Sql.SqlBulkLoader</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharedTestFramework\SharedTestFramework.csproj">
+      <Project>{692D1C7C-4403-468B-B2E8-51DA8EF0C654}</Project>
+      <Name>SharedTestFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

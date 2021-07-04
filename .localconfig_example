@@ -1,0 +1,7 @@
+{
+	"DatabaseName": "iValdezTest",
+	"SqlExpressConnectionString": "Data Source=localhost;Initial Catalog=iValdezTest;Integrated Security=true;",
+	"SqlExpressMasterConnectionString": "Data Source=localhost;Initial Catalog=master;Integrated Security=true;",
+	"PostgreSqlConnectionString": "Host=localhost;Username=postgres;Password=example;Database=ivaldeztest;",
+	"PostgreSqlMasterConnectionString": "Host=localhost;Username=postgres;Password=example;Database=postgres;"
+}
