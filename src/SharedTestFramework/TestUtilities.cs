@@ -20,9 +20,7 @@ namespace ivaldez.Sql.SharedTestFramework
 
         public static T DeserializeFile<T>(string file)
         {
-            var path = TestUtilities.AssemblyDirectory + @"\..\..\..\..\.localconfig";
-
-            var json = File.ReadAllText(path);
+            var json = File.ReadAllText(file);
 
             return JsonConvert.DeserializeObject<T>(json);
         }

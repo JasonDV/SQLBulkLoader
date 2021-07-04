@@ -16,7 +16,7 @@ namespace ivaldez.Sql.SharedTestFramework
                 {
                     if (_instance == null)
                     {
-                        var path = TestUtilities.AssemblyDirectory + @"\..\..\..\..\.localconfig";
+                        var path = Path.Combine(TestUtilities.AssemblyDirectory, @".localconfig");
 
                         _instance = TestUtilities.DeserializeFile<LocalConfig>(path);
                     }
