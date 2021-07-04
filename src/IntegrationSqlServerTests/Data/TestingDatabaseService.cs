@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Dapper;
+using ivaldez.Sql.SharedTestFramework;
 
 namespace ivaldez.Sql.IntegrationSqlServerTests.Data
 {
     public class TestingDatabaseService
     {
-        private static readonly string DatabaseName = "iValdezTest";
-        private readonly string _connectionString = $"Data Source=localhost;Initial Catalog={DatabaseName};Integrated Security=true;";
-        private readonly string _connectionStringMaster = $"Data Source=localhost;Initial Catalog=master;Integrated Security=true;";
+        public TestingDatabaseService()
+        {
+            _connectionString = LocalConfig.Instance.SqlExpressConnectionString;
+            _connectionStringMaster = LocalConfig.Instance.SqlExpressMasterConnectionString;
+            _databaseName = LocalConfig.Instance.DatabaseName;
+        }
+
+        private readonly string _databaseName;
+        private readonly string _connectionString;
+        private readonly string _connectionStringMaster;
 
         public IEnumerable<T> Query<T>(string sql, object param = null)
         {
@@ -21,16 +29,6 @@ namespace ivaldez.Sql.IntegrationSqlServerTests.Data
                 {
                     yield return dto;
                 }
-            }
-        }
-
-        public int Insert<T>(string sql, IEnumerable<T> dtos)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                var result = conn.Execute(sql, dtos);
-
-                return result;
             }
         }
 
@@ -60,7 +58,7 @@ namespace ivaldez.Sql.IntegrationSqlServerTests.Data
             {
                 connection.Open();
                 bool result;
-                using (var command2 = new SqlCommand($"SELECT db_id('{DatabaseName}')", connection))
+                using (var command2 = new SqlCommand($"SELECT db_id('{_databaseName}')", connection))
                 {
                     result = (command2.ExecuteScalar() != DBNull.Value);
                 }
@@ -68,7 +66,7 @@ namespace ivaldez.Sql.IntegrationSqlServerTests.Data
                 if (result == false)
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = $"CREATE DATABASE {DatabaseName}";
+                    command.CommandText = $"CREATE DATABASE {_databaseName}";
                     command.ExecuteNonQuery();
                 }
             }

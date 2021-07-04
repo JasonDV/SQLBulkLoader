@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Dapper;
+using ivaldez.Sql.SharedTestFramework;
 using Npgsql;
 
 namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
 {
     public class TestingDatabaseService
     {
-        private static readonly string DatabaseName = "iValdezTest".ToLower();
-        private readonly string _connectionString = $"Host=localhost;Username=postgres;Password=example;Database={DatabaseName};";
-        private readonly string _connectionStringMaster = $"Host=localhost;Username=postgres;Password=example;Database=postgres;";
+        public TestingDatabaseService()
+        {
+            _connectionString = LocalConfig.Instance.PostgreSqlConnectionString;
+            _connectionStringMaster = LocalConfig.Instance.PostgreSqlMasterConnectionString;
+            _databaseName = LocalConfig.Instance.DatabaseName.ToLower();
+        }
+
+        private readonly string _databaseName;
+        private readonly string _connectionString;
+        private readonly string _connectionStringMaster;
 
         public IEnumerable<T> Query<T>(string sql, object param = null)
         {
@@ -22,16 +30,6 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
                 {
                     yield return dto;
                 }
-            }
-        }
-
-        public int Insert<T>(string sql, IEnumerable<T> dtos)
-        {
-            using (var conn = new NpgsqlConnection(_connectionString))
-            {
-                var result = conn.Execute(sql, dtos);
-
-                return result;
             }
         }
 
@@ -61,7 +59,7 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
             {
                 connection.Open();
                 bool result;
-                using (var command2 = new NpgsqlCommand($"SELECT 1 FROM pg_database WHERE datname='{DatabaseName}'", connection))
+                using (var command2 = new NpgsqlCommand($"SELECT 1 FROM pg_database WHERE datname='{_databaseName}'", connection))
                 {
                     result = (command2.ExecuteScalar() != null);
                 }
@@ -69,7 +67,7 @@ namespace ivaldez.Sql.IntegrationPostgreSqlTests.Data
                 if (result == false)
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = $"CREATE DATABASE {DatabaseName}";
+                    command.CommandText = $"CREATE DATABASE {_databaseName}";
                     command.ExecuteNonQuery();
                 }
             }

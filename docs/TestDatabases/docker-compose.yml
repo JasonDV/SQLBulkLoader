@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  db_postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: example
+  db_adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  db_sqlexpress:
+    image: mcr.microsoft.com/mssql/server
+    restart: always
+    ports:
+      - 9933:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: Example123
+      MSSQL_PID:   Express
