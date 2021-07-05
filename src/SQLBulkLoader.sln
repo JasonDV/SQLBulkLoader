@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTestFramework", "Shar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ivaldez.Sql.SqlBulkLoader.PostgreSql", "ivaldez.SqlBulkLoader.PostgreSql\ivaldez.Sql.SqlBulkLoader.PostgreSql.csproj", "{18B45E34-03AE-4A80-B6F0-BB37DADB8003}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ivaldez.SqlBulkLoader.Core", "ivaldez.SqlBulkLoader.Core\ivaldez.SqlBulkLoader.Core.csproj", "{FE9B3097-F956-4640-BFBD-1F3D3E884F83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{18B45E34-03AE-4A80-B6F0-BB37DADB8003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18B45E34-03AE-4A80-B6F0-BB37DADB8003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18B45E34-03AE-4A80-B6F0-BB37DADB8003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE9B3097-F956-4640-BFBD-1F3D3E884F83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE9B3097-F956-4640-BFBD-1F3D3E884F83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE9B3097-F956-4640-BFBD-1F3D3E884F83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE9B3097-F956-4640-BFBD-1F3D3E884F83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

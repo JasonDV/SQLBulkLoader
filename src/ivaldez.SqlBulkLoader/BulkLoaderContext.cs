@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
+using ivaldez.Sql.SqlBulkLoader.Core;
 
 namespace ivaldez.Sql.SqlBulkLoader
 {
@@ -38,7 +39,7 @@ namespace ivaldez.Sql.SqlBulkLoader
 
         public BulkLoaderContext<T> With(Expression<Func<T, object>> expression, string newName)
         {
-            var name = GetName(expression);
+            var name = ExpressionHelper.GetName(expression);
 
             _renameFields.Add(name, newName);
 
@@ -47,7 +48,7 @@ namespace ivaldez.Sql.SqlBulkLoader
 
         public BulkLoaderContext<T> Without(Expression<Func<T, object>> expression)
         {
-            var name = GetName(expression);
+            var name = ExpressionHelper.GetName(expression);
 
             _withoutMembers.Add(name);
 
@@ -91,21 +92,6 @@ namespace ivaldez.Sql.SqlBulkLoader
                 _renameFields,
                 _batchSize,
                 _noBatch);
-        }
-
-        private string GetName(Expression<Func<T, object>> expression)
-        {
-            var body = expression.Body as MemberExpression;
-
-            if (body == null)
-            {
-                var ubody = (UnaryExpression) expression.Body;
-                body = ubody.Operand as MemberExpression;
-            }
-
-            var name = body.Member.Name;
-
-            return name;
         }
     }
 }

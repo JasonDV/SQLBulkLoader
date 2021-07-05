@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using ivaldez.Sql.SqlBulkLoader.Core;
 using Npgsql;
 
 namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
@@ -40,7 +41,7 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
 
         public BulkLoaderContext<T> IdentityColumn(Expression<Func<T, object>> expression)
         {
-            var name = GetName(expression);
+            var name = ExpressionHelper.GetName(expression);
 
             _identityOrSerialColumn = name;
 
@@ -49,7 +50,7 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
 
         public BulkLoaderContext<T> With(Expression<Func<T, object>> expression, string newName)
         {
-            var name = GetName(expression);
+            var name = ExpressionHelper.GetName(expression);
 
             _renameFields.Add(name, newName);
 
@@ -58,7 +59,7 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
 
         public BulkLoaderContext<T> Without(Expression<Func<T, object>> expression)
         {
-            var name = GetName(expression);
+            var name = ExpressionHelper.GetName(expression);
 
             _withoutMembers.Add(name);
 
@@ -115,21 +116,6 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
                 _renameFields,
                 _batchSize,
                 _noBatch);
-        }
-
-        private string GetName(Expression<Func<T, object>> expression)
-        {
-            var body = expression.Body as MemberExpression;
-
-            if (body == null)
-            {
-                var ubody = (UnaryExpression) expression.Body;
-                body = ubody.Operand as MemberExpression;
-            }
-
-            var name = body.Member.Name;
-
-            return name;
         }
     }
 }

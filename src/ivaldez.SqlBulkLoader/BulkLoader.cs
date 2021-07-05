@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
-using FastMember;
+using ivaldez.Sql.SqlBulkLoader.Core;
 
 namespace ivaldez.Sql.SqlBulkLoader
 {
@@ -13,21 +11,21 @@ namespace ivaldez.Sql.SqlBulkLoader
     /// </summary>
     public class BulkLoader : IBulkLoader
     {
-        private readonly ISqlBulkCopyUtility _sqlBulkCopyUtility;
+        private readonly ISqlBulkLoadUtility _sqlBulkCopyUtility;
 
         /// <summary>
         /// Constructor that uses default SqlBulkCopyUtility class.
         /// </summary>
         public BulkLoader()
         {
-            _sqlBulkCopyUtility = new SqlBulkCopyUtility();
+            _sqlBulkCopyUtility = new SqlBulkLoadUtility();
         }
 
         /// <summary>
         /// Constructor with SQL BulkCopy Utility. Interface allows for extension and testing. 
         /// </summary>
         /// <param name="sqlBulkCopyUtility"></param>
-        public BulkLoader(ISqlBulkCopyUtility sqlBulkCopyUtility)
+        public BulkLoader(ISqlBulkLoadUtility sqlBulkCopyUtility)
         {
             _sqlBulkCopyUtility = sqlBulkCopyUtility;
         }
@@ -109,7 +107,7 @@ namespace ivaldez.Sql.SqlBulkLoader
             int batchSize = 5000, 
             bool noBatch = false)
         {
-            var targetProperties = GetTargetProperties<T>(propertiesToIgnore, renameFields);
+            var targetProperties = ReflectionHelper.GetTargetProperties<T>(propertiesToIgnore, renameFields);
 
             var options = SqlBulkCopyOptions.CheckConstraints | SqlBulkCopyOptions.TableLock;
 
@@ -126,54 +124,6 @@ namespace ivaldez.Sql.SqlBulkLoader
             {
                 BulkCopyWithBatching(tableName, conn, dataToInsert, batchSize, options, targetProperties);
             }
-        }
-
-        /// <summary>
-        /// SqlBulkCopyUtility wraps the basic functionality for bulkCopy. The interface is provided so that
-        /// the basic class can be extended if necessary, as well as for testing.
-        /// </summary>
-        public class SqlBulkCopyUtility: ISqlBulkCopyUtility
-        {
-            public void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
-                TargetProperty[] targetProperties, IEnumerable<T> toInsert)
-            {
-                using (var bulkCopy = new SqlBulkCopy(conn, options, null))
-                {
-                    var parameters = targetProperties.Select(x => x.OriginalName).ToArray();
-
-                    using (var reader = ObjectReader.Create(toInsert, parameters))
-                    {
-                        foreach (var property in targetProperties)
-                        {
-                            bulkCopy.ColumnMappings.Add(property.OriginalName, property.Name);
-                        }
-
-                        bulkCopy.BulkCopyTimeout = 900;
-                        bulkCopy.DestinationTableName = tableName;
-                        bulkCopy.WriteToServer(reader);
-
-                        bulkCopy.Close();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// SqlBulkCopyUtility wraps the basic functionality for bulkCopy. The interface is provided so that
-        /// the basic class can be extended if necessary, as well as for testing.
-        /// </summary>
-        public interface ISqlBulkCopyUtility
-        {
-            void BulkCopy<T>(string tableName, SqlConnection conn, SqlBulkCopyOptions options,
-                TargetProperty[] targetProperties, IEnumerable<T> toInsert);
-        }
-
-        public class TargetProperty
-        {
-            public string Name { get; set; }
-            public Type Type { get; set; }
-            public PropertyInfo PropertyInfo { get; set; }
-            public string OriginalName { get; set; }
         }
 
         private void BulkCopyWithNoBatching<T>(string tableName, SqlConnection conn, IEnumerable<T> dataToInsert,
@@ -203,46 +153,6 @@ namespace ivaldez.Sql.SqlBulkLoader
                 _sqlBulkCopyUtility.BulkCopy(tableName, conn, options, targetProperties, batch);
                 batch.Clear();
             }
-        }
-
-        private static TargetProperty[] GetTargetProperties<T>(List<string> propertiesToIgnore,
-            Dictionary<string, string> renameFields)
-        {
-            var ignoreProperties = new HashSet<string>(propertiesToIgnore);
-
-            var targetProperties = typeof(T)
-                .GetProperties()
-                .Where(x => ignoreProperties.Contains(x.Name) == false)
-                .Select(x =>
-                {
-                    var fieldName = x.Name;
-
-                    if (renameFields.ContainsKey(fieldName))
-                    {
-                        fieldName = renameFields[fieldName];
-                    }
-
-                    return new TargetProperty
-                    {
-                        Name = fieldName,
-                        OriginalName = x.Name,
-                        Type = x.PropertyType,
-                        PropertyInfo = x
-                    };
-                }).ToArray();
-
-            return targetProperties;
-        }
-    }
-
-    /// <summary>
-    /// Factory class used to create default instances of the BulkLoader
-    /// </summary>
-    public class BulkLoaderFactory
-    {
-        public static IBulkLoader Create()
-        {
-            return new BulkLoader(new BulkLoader.SqlBulkCopyUtility());
         }
     }
 }

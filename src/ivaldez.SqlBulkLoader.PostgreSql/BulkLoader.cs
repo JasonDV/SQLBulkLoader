@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ivaldez.Sql.SqlBulkLoader.Core;
 using Npgsql;
 
 namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
@@ -12,21 +13,21 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
     /// </summary>
     public class BulkLoader : IBulkLoader
     {
-        private readonly ISqlBulkCopyUtility _sqlBulkCopyUtility;
+        private readonly ISqlBulkLoadUtility _sqlBulkCopyUtility;
 
         /// <summary>
         /// Constructor that uses default SqlBulkCopyUtility class.
         /// </summary>
         public BulkLoader()
         {
-            _sqlBulkCopyUtility = new SqlBulkCopyUtility();
+            _sqlBulkCopyUtility = new SqlBulkLoadUtility();
         }
 
         /// <summary>
         /// Constructor with SQL BulkCopy Utility. Interface allows for extension and testing. 
         /// </summary>
         /// <param name="sqlBulkCopyUtility"></param>
-        public BulkLoader(ISqlBulkCopyUtility sqlBulkCopyUtility)
+        public BulkLoader(ISqlBulkLoadUtility sqlBulkCopyUtility)
         {
             _sqlBulkCopyUtility = sqlBulkCopyUtility;
         }
@@ -108,7 +109,7 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
             int batchSize = 5000, 
             bool noBatch = false)
         {
-            var targetProperties = GetTargetProperties<T>(propertiesToIgnore, renameFields);
+            var targetProperties = ReflectionHelper.GetTargetProperties<T>(propertiesToIgnore, renameFields);
             
             if (noBatch)
             {
@@ -120,58 +121,6 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
             }
         }
 
-        /// <summary>
-        /// SqlBulkCopyUtility wraps the basic functionality for bulkCopy. The interface is provided so that
-        /// the basic class can be extended if necessary, as well as for testing.
-        /// </summary>
-        public class SqlBulkCopyUtility: ISqlBulkCopyUtility
-        {
-            public void BulkCopy<T>(string tableName, NpgsqlConnection conn,
-                TargetProperty[] targetProperties, IEnumerable<T> toInsert)
-            {
-                var propertyList = new List<string>();
-                foreach (var property in targetProperties)
-                {
-                    propertyList.Add(property.Name.ToLower());
-                }
-
-                var columnListString = string.Join(",", propertyList.Select(x => @"""" + x + @""""));
-                
-                using (var writer = conn
-                    .BeginBinaryImport($@"COPY ""{tableName}"" ({columnListString}) FROM STDIN (FORMAT BINARY)"))
-                {
-                    foreach (var dto in toInsert)
-                    {
-                        writer.StartRow();
-
-                        foreach (var property in targetProperties)
-                        {
-                            writer.Write(property.PropertyInfo.GetValue(dto));
-                        }
-                    }
-                
-                    writer.Complete();
-                }
-            }
-        }
-
-        /// <summary>
-        /// SqlBulkCopyUtility wraps the basic functionality for bulkCopy. The interface is provided so that
-        /// the basic class can be extended if necessary, as well as for testing.
-        /// </summary>
-        public interface ISqlBulkCopyUtility
-        {
-            void BulkCopy<T>(string tableName, NpgsqlConnection conn,
-                TargetProperty[] targetProperties, IEnumerable<T> toInsert);
-        }
-
-        public class TargetProperty
-        {
-            public string Name { get; set; }
-            public Type Type { get; set; }
-            public PropertyInfo PropertyInfo { get; set; }
-            public string OriginalName { get; set; }
-        }
 
         private void BulkCopyWithNoBatching<T>(string tableName, NpgsqlConnection conn, IEnumerable<T> dataToInsert,
             TargetProperty[] targetProperties)
@@ -200,46 +149,6 @@ namespace ivaldez.Sql.SqlBulkLoader.PostgreSql
                 _sqlBulkCopyUtility.BulkCopy(tableName, conn, targetProperties, batch);
                 batch.Clear();
             }
-        }
-
-        private static TargetProperty[] GetTargetProperties<T>(List<string> propertiesToIgnore,
-            Dictionary<string, string> renameFields)
-        {
-            var ignoreProperties = new HashSet<string>(propertiesToIgnore);
-
-            var targetProperties = typeof(T)
-                .GetProperties()
-                .Where(x => ignoreProperties.Contains(x.Name) == false)
-                .Select(x =>
-                {
-                    var fieldName = x.Name;
-
-                    if (renameFields.ContainsKey(fieldName))
-                    {
-                        fieldName = renameFields[fieldName];
-                    }
-
-                    return new TargetProperty
-                    {
-                        Name = fieldName,
-                        OriginalName = x.Name,
-                        Type = x.PropertyType,
-                        PropertyInfo = x
-                    };
-                }).ToArray();
-
-            return targetProperties;
-        }
-    }
-
-    /// <summary>
-    /// Factory class used to create default instances of the BulkLoader
-    /// </summary>
-    public class BulkLoaderFactory
-    {
-        public static IBulkLoader Create()
-        {
-            return new BulkLoader(new BulkLoader.SqlBulkCopyUtility());
         }
     }
 }
