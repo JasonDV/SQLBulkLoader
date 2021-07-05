@@ -2,31 +2,28 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <AssemblyName>ivaldez.Sql.SqlBulkLoader</AssemblyName>
+    <AssemblyName>ivaldez.Sql.SqlBulkLoader.Core</AssemblyName>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Copyright>Copyright 2021 Jason Valdez</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JasonDV/SQLBulkLoader</PackageProjectUrl>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <Description>A convention based wrapper around the SqlBulkCopy utility.</Description>
+    <Description></Description>
     <NeutralLanguage>en</NeutralLanguage>
     <Version>1.0.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Authors>Jason Valdez</Authors>
     <Company>ivaldez</Company>
-    <RepositoryUrl>https://github.com/JasonDV/SQLBulkLoader</RepositoryUrl>
+    <RepositoryUrl></RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>SqlBulkCopy database mssql bulk sql</PackageTags>
+    <PackageTags></PackageTags>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RootNamespace>ivaldez.Sql.SqlBulkLoader.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FastMember" Version="1.5.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ivaldez.SqlBulkLoader.Core\ivaldez.SqlBulkLoader.Core.csproj" />
   </ItemGroup>
 
 </Project>

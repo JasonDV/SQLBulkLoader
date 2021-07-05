@@ -123,6 +123,10 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.8.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ivaldez.SqlBulkLoader.Core\ivaldez.SqlBulkLoader.Core.csproj">
+      <Project>{FE9B3097-F956-4640-BFBD-1F3D3E884F83}</Project>
+      <Name>ivaldez.SqlBulkLoader.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ivaldez.SqlBulkLoader.PostgreSql\ivaldez.Sql.SqlBulkLoader.PostgreSql.csproj">
       <Project>{18B45E34-03AE-4A80-B6F0-BB37DADB8003}</Project>
       <Name>ivaldez.Sql.SqlBulkLoader.PostgreSql</Name>

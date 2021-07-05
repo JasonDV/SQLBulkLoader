@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using ivaldez.Sql.SqlBulkLoader;
+using ivaldez.Sql.SqlBulkLoader.Core;
 
 namespace ivaldez.Sql.IntegrationSqlServerTests.BulkLoading
 {
-    public class SqlBulkCopyUtilitySpy: BulkLoader.ISqlBulkCopyUtility
+    public class SqlBulkCopyUtilitySpy: ISqlBulkLoadUtility
     {
         public void BulkCopy<T>(string tableName,
             SqlConnection conn, 
             SqlBulkCopyOptions options,
-            BulkLoader.TargetProperty[] targetProperties,
+            TargetProperty[] targetProperties,
             IEnumerable<T> toInsert)
         {
             BulkCopyCalled++;
 
-            new BulkLoader.SqlBulkCopyUtility()
+            new SqlBulkLoadUtility()
                 .BulkCopy(tableName,
                     conn, 
                     options,
