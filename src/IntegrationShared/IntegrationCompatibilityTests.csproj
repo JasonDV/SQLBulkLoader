@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfirmMatchingTests.cs" />
+    <Compile Include="IterationExtensionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +80,10 @@
     <ProjectReference Include="..\IntegrationSqlServerTests\IntegrationSqlServerTests.csproj">
       <Project>{2570e931-33d4-4d86-b49d-d27f7ed29265}</Project>
       <Name>IntegrationSqlServerTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ivaldez.SqlBulkLoader.Core\ivaldez.SqlBulkLoader.Core.csproj">
+      <Project>{FE9B3097-F956-4640-BFBD-1F3D3E884F83}</Project>
+      <Name>ivaldez.SqlBulkLoader.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedTestFramework\SharedTestFramework.csproj">
       <Project>{692d1c7c-4403-468b-b2e8-51da8ef0c654}</Project>
